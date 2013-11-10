@@ -1,0 +1,86 @@
+#!/usr/bin/env node
+
+/**
+ * @author Roman A. Sarria
+ *
+ * Remember chmod u+x to run directly
+ */
+
+var program = require('commander'),
+	exec = require('child_process').exec,
+	colors = require('colors'),
+	fs = require('fs'),
+	sqwish = require('sqwish'),
+	_ = require('underscore'),
+	path = require('path'),
+	nfs = require('node-fs');
+
+program.version('0.0.1')
+	.option('--firstname', 'firstname')
+	.option('--lastname', 'lastname')
+	.option('--email', 'email')
+	.option('--password', 'password')
+	.option('--pid', 'pid')
+	.option('--username', 'username')
+	.option('--port', 'port')
+	.parse(process.argv);
+
+/*
+	Steps:
+	+ Git Clone -> medicians/Port
+	+ Write instance.json
+	+ Run npm install on folder
+	+ Run Forever
+	+ Add Line to boot.sh
+
+	Example of instance.json
+	{
+		"firstname" : "Demo",
+		"lastname" : "Médico",
+		"email" : "info@speryans.com",
+		"password" : "123456",
+		"pid" : "99999999",
+		"type" : "admin",
+		"username" : "demo",
+		"port" : "3010",
+		"env" : "production"
+	}
+*/
+
+if (program.firstname && program.lastname && program.email && program.password && program.pid && program.username && program.port) {
+	var instanceData = {
+		firstname: program.firstname,
+		lastname: program.lastname,
+		email: program.email,
+		password: program.password,
+		pid: program.pid,
+		type: 'admin',
+		username: program.username,
+		port: program.port,
+		env: 'production'
+	};
+
+	// Get quantity of folders inside medicians
+
+	// Clone repo
+	exec('cd medicians && git clone https://medicians:MD123454321@bitbucket.org/medicians/instance.git ' + program.port, function(error, stdout, stderr) {
+		// Write instance.json
+		fs.writeFileSync('instance.json', JSON.stringify(instanceData));
+
+		// Run npm install
+		exec('npm install', function(error, stdout, stderr) {
+
+			// Run forever
+			//exec('cd /home/ubuntu/medicians/' + program.port + '/ && forever start app.js', function(error, stdout, stderr) {
+			fs.appendFileSync('boot.sh', '\ncd /home/ubuntu/medicians/' + program.port + '/ && sudo forever start app.js');
+
+			console.info('cd /home/ubuntu/medicians/' + program.port + '/ && sudo forever start app.js'.green);
+			exec('sudo reboot', function(error, stdout, stderr) {
+				process.stdin.destroy();
+			});
+			//});
+		});
+	});
+} else {
+	program.help();
+}
