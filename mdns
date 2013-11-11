@@ -65,7 +65,7 @@ if (program.firstname && program.lastname && program.email && program.password &
 	// Clone repo
 	exec('cd medicians && git clone https://medicians:MD123454321@bitbucket.org/medicians/instance.git ' + program.port, function(error, stdout, stderr) {
 		// Write instance.json
-		fs.writeFileSync('instance.json', JSON.stringify(instanceData));
+		fs.writeFileSync('medicians/' + program.port + '/instance.json', JSON.stringify(instanceData));
 
 		// Run npm install
 		exec('npm install', function(error, stdout, stderr) {
