@@ -16,13 +16,13 @@ var program = require('commander'),
 	nfs = require('node-fs');
 
 program.version('0.0.1')
-	.option('--firstname', 'firstname')
-	.option('--lastname', 'lastname')
-	.option('--email', 'email')
-	.option('--password', 'password')
-	.option('--pid', 'pid')
-	.option('--username', 'username')
-	.option('--port', 'port')
+	.option('--firstname [firstname]', 'Firstname')
+	.option('--lastname [lastname]', 'Lastname')
+	.option('--email [email]', 'Email')
+	.option('--password [password]', 'Password')
+	.option('--pid [pid]', 'D.N.I')
+	.option('--username [username]', 'Username')
+	.option('--port [port]', 'Port')
 	.parse(process.argv);
 
 /*
